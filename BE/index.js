@@ -5,7 +5,8 @@ const PORT = process.env.PORT || 3500;
 
 //importing the third party middleware
 const cors = require("cors");
-
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 //using the third party middleware
 app.use(cors()); //allows access to all origins to access this app's API's or routes etc.
 
@@ -23,8 +24,12 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "/Public")));
 app.use("/home", express.static(path.join(__dirname, "/Public")));
+app.use("/register", require("./routes/register"));
+app.use("/login", require("./routes/auth"));
+app.use("/refresh", require("./routes/refresh"));
+app.use(require("./middleware/verifyToken"));
 app.use("/home", require("./routes/root"));
-app.use("/user", require("./routes/user"));
+
 //page not found handling [404 status code]
 app.all("*", (req, res) => {
   res.status(404);
