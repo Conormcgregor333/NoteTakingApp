@@ -2,10 +2,12 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3500;
-
+const mongoose = require("mongoose");
 //importing the third party middleware
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const { NotesDbConnection } = require("./config/NotesDB");
+require("dotenv").config();
 app.use(cookieParser());
 //using the third party middleware
 app.use(cors()); //allows access to all origins to access this app's API's or routes etc.
@@ -15,9 +17,9 @@ app.use((req, res, next) => {
   console.log(req.method, " ", req.path);
   next();
 });
-
+NotesDbConnection();
 //using some built in middlewares
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
 //middleware to parse the JSON requests
 app.use(express.json());
@@ -42,7 +44,10 @@ app.all("*", (req, res) => {
   }
 });
 
-//listening to the PORT
-app.listen(PORT, () => {
-  console.log("Listening to port ", PORT);
+//listening to the PORT only when the DB connection is successful
+mongoose.connection.once("open", () => {
+  console.log("MongoDB Connected ✅");
+  app.listen(PORT, () => {
+    console.log("Listening to port ", PORT);
+  });
 });
