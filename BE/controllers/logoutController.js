@@ -1,11 +1,4 @@
-const userDB = {
-  users: require("../data/users"),
-  setUsers: function (data) {
-    this.users = data;
-  },
-};
-const fs = require("fs").promises;
-const path = require("path");
+const UserDB = require("../Model/Users");
 const logoutUser = async (req, res) => {
   //log req with acc token and ref in cookie
   // BE checks token
@@ -15,21 +8,15 @@ const logoutUser = async (req, res) => {
   if (!refreshToken) {
     return res.sendStatus(401);
   }
-  const foundUser = userDB.users.find(
-    (item) => item.refresh_token === refreshToken
-  );
+  const foundUser = await UserDB.findOne({
+    refresh_token: refreshToken,
+  }).exec();
   if (!foundUser) {
     res.clearCookie("refresh_token");
     return res.sendStatus(403);
   }
-  const usersData = userDB.users.filter(
-    (item) => item.refreshToken !== refreshToken
-  );
-  userDB.setUsers(usersData);
-  await fs.writeFile(
-    path.join(__dirname, "..", "data", "users.json"),
-    JSON.stringify(usersData)
-  );
+  foundUser.refresh_token = "";
+  foundUser.save();
   res.clearCookie("refresh_token");
   res.status(200).send("Logged out successfully");
 };
