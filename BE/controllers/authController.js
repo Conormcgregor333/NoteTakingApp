@@ -4,27 +4,29 @@ const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 const authenticateUser = async (req, res) => {
-  const { user, pwd } = req.body;
-  if (!user || !pwd) {
-    res.status(400).send("User and password are required");
+  const { user, pwd, email } = req.body;
+  if (!user || !pwd || !email) {
+    res.status(400).send("User, password and email are required");
   }
   // const foundUser = userDB.users.find((item) => item.user === user);
-  const foundUser = await UserDB.findOne({ user });
+  const foundUser = await UserDB.findOne({ email }).exec();
+  console.log(foundUser);
   if (!foundUser) {
     res.status(400).send("User not found");
   } else {
     try {
-      const result = await bcrypt.compare(pwd, foundUser.password).exec();
+      const result = await bcrypt.compare(pwd, foundUser.password);
+      console.log(result);
       if (result) {
         console.log(process.env.ACCESS_TOKEN_SECRET);
         const access_token = jwt.sign(
-          { username: foundUser.user },
+          { email: foundUser.email },
           process.env.ACCESS_TOKEN_SECRET,
           { expiresIn: "30s" }
         );
         console.log("Access token: ", access_token);
         const refresh_token = jwt.sign(
-          { username: foundUser.user },
+          { email: foundUser.email },
           process.env.REFRESH_TOKEN_SECRET,
           { expiresIn: "1d" }
         );
@@ -33,8 +35,10 @@ const authenticateUser = async (req, res) => {
         res.cookie("refresh_token", refresh_token, {
           httpOnly: true,
           maxAge: 1000 * 60 * 60 * 24,
+          secure: true,
+          sameSite: "None",
         });
-        res.send(`Access token: ${access_token}`);
+        res.send({ token: access_token });
       } else {
         res.status(401).send("Invalid credentials");
       }

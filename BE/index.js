@@ -10,7 +10,13 @@ const { NotesDbConnection } = require("./config/NotesDB");
 require("dotenv").config();
 app.use(cookieParser());
 //using the third party middleware
-app.use(cors()); //allows access to all origins to access this app's API's or routes etc.
+
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Replace with your frontend URL
+    credentials: true, // Allows cookies to be sent/received
+  })
+);
 
 //using a custom middleware for looging request method and path name
 app.use((req, res, next) => {

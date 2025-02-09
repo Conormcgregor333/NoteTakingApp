@@ -12,12 +12,12 @@ const refreshTokenAccess = async (req, res) => {
   }
 
   jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-    if (err || foundUser.user !== decoded.user) {
+    if (err || foundUser.email !== decoded.email) {
       return res.sendStatus(403);
     }
-    req.user = decoded.user;
+    req.email = decoded.email;
     const newAccessToken = jwt.sign(
-      { username: decoded.user },
+      { email: decoded.email },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "30s" }
     );
