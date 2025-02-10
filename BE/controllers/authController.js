@@ -22,7 +22,7 @@ const authenticateUser = async (req, res) => {
         const access_token = jwt.sign(
           { email: foundUser.email },
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "30s" }
+          { expiresIn: "300s" }
         );
         console.log("Access token: ", access_token);
         const refresh_token = jwt.sign(

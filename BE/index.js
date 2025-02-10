@@ -38,6 +38,7 @@ app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/loguot"));
 app.use(require("./middleware/verifyToken"));
 app.use("/home", require("./routes/root"));
+app.use("/notes", require("./routes/notesRoutes/routes"));
 
 //page not found handling [404 status code]
 app.all("*", (req, res) => {
