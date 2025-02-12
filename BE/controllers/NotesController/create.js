@@ -6,7 +6,8 @@ const createNote = async (req, res) => {
     return res.status(400).send({ error: "Title and text are required" });
   }
   try {
-    const foundNote = await notes.find({ title: title });
+    const foundNote = await notes.findOne({ title: title }).exec();
+    console.log(foundNote);
     if (foundNote) {
       return res
         .status(400)
