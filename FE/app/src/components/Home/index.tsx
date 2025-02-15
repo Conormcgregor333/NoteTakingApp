@@ -3,12 +3,13 @@ import axios from "axios";
 import { AppPaths } from "../../Routes/route";
 import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
+
 export default function Home() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   function handleLogout() {
     axios
-      .get("http://localhost:3500/logout")
+      .get("http://localhost:3500/logout", { withCredentials: true })
       .then((resp) => {
         console.log(resp);
         localStorage.clear();
@@ -84,6 +85,7 @@ export default function Home() {
       >
         Submit
       </Button>
+      <p>{import.meta.env.PUBLIC_KEY}</p>
     </Box>
   );
 }

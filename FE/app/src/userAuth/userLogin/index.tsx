@@ -66,6 +66,7 @@ export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   function handleLogin() {
+    localStorage.clear();
     axios.defaults.withCredentials = true;
     axios
       .post("http://localhost:3500/login", {
@@ -76,6 +77,7 @@ export default function SignIn() {
       .then((resp) => {
         console.log(resp);
         localStorage.setItem("token", resp.data.token);
+        localStorage.setItem("userId", resp?.data?.id);
         navigate(AppPaths.HOME);
       })
       .catch((err) => {

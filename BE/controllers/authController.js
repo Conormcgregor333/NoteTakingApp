@@ -38,7 +38,7 @@ const authenticateUser = async (req, res) => {
           secure: true,
           sameSite: "None",
         });
-        res.send({ token: access_token });
+        res.send({ token: access_token, id: foundUser?.id });
       } else {
         res.status(401).send("Invalid credentials");
       }

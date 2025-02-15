@@ -8,19 +8,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { NotesDbConnection } = require("./config/NotesDB");
-const { publicKey, privateKey } = generateKeyPairSync("rsa", {
-  modulusLength: 2048, // Key size (2048-bit recommended for security)
-  publicKeyEncoding: {
-    type: "spki",
-    format: "pem",
-  },
-  privateKeyEncoding: {
-    type: "pkcs8",
-    format: "pem",
-  },
-});
-console.log("Public Key:\n", publicKey);
-console.log("Private Key:\n", privateKey);
+
 require("dotenv").config();
 app.use(cookieParser());
 //using the third party middleware
@@ -51,6 +39,7 @@ app.use("/login", require("./routes/auth"));
 app.use("/refresh", require("./routes/refresh"));
 app.use("/logout", require("./routes/loguot"));
 app.use(require("./middleware/verifyToken"));
+app.use("/user", require("./routes/userInfo"));
 app.use("/home", require("./routes/root"));
 app.use("/notes", require("./routes/notesRoutes/routes"));
 
