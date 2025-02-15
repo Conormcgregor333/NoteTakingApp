@@ -1,4 +1,5 @@
 const express = require("express");
+const { generateKeyPairSync } = require("crypto");
 const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3500;
@@ -7,6 +8,19 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { NotesDbConnection } = require("./config/NotesDB");
+const { publicKey, privateKey } = generateKeyPairSync("rsa", {
+  modulusLength: 2048, // Key size (2048-bit recommended for security)
+  publicKeyEncoding: {
+    type: "spki",
+    format: "pem",
+  },
+  privateKeyEncoding: {
+    type: "pkcs8",
+    format: "pem",
+  },
+});
+console.log("Public Key:\n", publicKey);
+console.log("Private Key:\n", privateKey);
 require("dotenv").config();
 app.use(cookieParser());
 //using the third party middleware
