@@ -13,6 +13,7 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import MuiCard from "@mui/material/Card";
 import { useState } from "react";
+import CryptoJS from "crypto-js";
 const SignUpContainer = styled(Stack)(({ theme }) => ({
   height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
   minHeight: "100%",
@@ -65,14 +66,25 @@ export default function SignIn() {
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  function encryptPassword(password: string) {
+    const encrypted = CryptoJS.AES.encrypt(
+      password,
+      import.meta.env.VITE_PUBLIC_KEY
+    ).toString();
+    return encrypted; // Send this to the backend
+  }
   function handleLogin() {
-    axios.defaults.withCredentials = true;
+    console.log("reg");
     axios
-      .post("http://localhost:3500/register", {
-        user: user,
-        pwd: password,
-        email: email,
-      })
+      .post(
+        "http://localhost:3500/register",
+        {
+          user: user,
+          pwd: encryptPassword(password),
+          email: email,
+        },
+        { withCredentials: true }
+      )
       .then((resp) => {
         console.log(resp);
         navigate(AppPaths.LOGIN);

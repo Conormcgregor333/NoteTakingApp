@@ -3,6 +3,16 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
+const CryptoJS = require("crypto-js");
+function decryptPassword(encryptedPassword) {
+  const bytes = CryptoJS.AES.decrypt(
+    encryptedPassword,
+    process.env.PRIVATE_KEY
+  );
+  const decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
+  return decryptedPassword;
+}
+
 const authenticateUser = async (req, res) => {
   const { user, pwd, email } = req.body;
   if (!user || !pwd || !email) {
@@ -15,7 +25,11 @@ const authenticateUser = async (req, res) => {
     res.status(400).send("User not found");
   } else {
     try {
-      const result = await bcrypt.compare(pwd, foundUser.password);
+      const decryptedPassword = decryptPassword(pwd);
+      const result = await bcrypt.compare(
+        decryptedPassword,
+        foundUser.password
+      );
       console.log(result);
       if (result) {
         console.log(process.env.ACCESS_TOKEN_SECRET);
