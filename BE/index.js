@@ -8,17 +8,17 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { NotesDbConnection } = require("./config/NotesDB");
-const { publicKey, privateKey } = generateKeyPairSync("rsa", {
-  modulusLength: 2048, // Key size (2048-bit recommended for security)
-  publicKeyEncoding: {
-    type: "spki",
-    format: "pem",
-  },
-  privateKeyEncoding: {
-    type: "pkcs8",
-    format: "pem",
-  },
-});
+// const { publicKey, privateKey } = generateKeyPairSync("rsa", {
+//   modulusLength: 2048, // Key size (2048-bit recommended for security)
+//   publicKeyEncoding: {
+//     type: "spki",
+//     format: "pem",
+//   },
+//   privateKeyEncoding: {
+//     type: "pkcs8",
+//     format: "pem",
+//   },
+// });
 
 // console.log("Public Key:\n", publicKey);
 // console.log("Private Key:\n", privateKey);
@@ -66,6 +66,18 @@ app.all("*", (req, res) => {
     res.json({ error: "404 not found" });
   }
 });
+
+//inserting sample data into the DB -
+// const sampleData = require("./Model/sampleData");
+// const notesDB = require("./Model/notes");
+// notesDB
+//   .insertMany(sampleData)
+//   .then(() => {
+//     console.log("Sample data inserted into the DB.");
+//   })
+//   .catch(() => {
+//     console.log("Failed to insert the sample data into the DB.");
+//   });
 
 //listening to the PORT only when the DB connection is successful
 mongoose.connection.once("open", () => {
