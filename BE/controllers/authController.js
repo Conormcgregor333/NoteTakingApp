@@ -25,11 +25,8 @@ const authenticateUser = async (req, res) => {
     res.status(400).send("User not found");
   } else {
     try {
-      const decryptedPassword = decryptPassword(pwd);
-      const result = await bcrypt.compare(
-        decryptedPassword,
-        foundUser.password
-      );
+      // const decryptedPassword = decryptPassword(pwd);
+      const result = await bcrypt.compare(pwd, foundUser.password);
       console.log(result);
       if (result) {
         console.log(process.env.ACCESS_TOKEN_SECRET);
